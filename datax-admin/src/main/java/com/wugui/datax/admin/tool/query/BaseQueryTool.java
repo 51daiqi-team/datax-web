@@ -1,8 +1,8 @@
 package com.wugui.datax.admin.tool.query;
 
-import cn.hutool.core.util.StrUtil;
 import com.google.common.collect.ImmutableList;
 import com.google.common.collect.Lists;
+
 import com.wugui.datatx.core.util.Constants;
 import com.wugui.datax.admin.core.util.LocalCacheUtil;
 import com.wugui.datax.admin.entity.JobDatasource;
@@ -15,16 +15,25 @@ import com.wugui.datax.admin.util.AESUtil;
 import com.wugui.datax.admin.util.JdbcConstants;
 import com.wugui.datax.admin.util.JdbcUtils;
 import com.zaxxer.hikari.HikariDataSource;
-import org.apache.commons.lang.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
-import javax.sql.DataSource;
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.DatabaseMetaData;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
+
+import javax.sql.DataSource;
+
+import org.apache.commons.lang.StringUtils;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
+import cn.hutool.core.util.StrUtil;
 
 /**
  * 抽象查询工具
@@ -443,14 +452,24 @@ public abstract class BaseQueryTool implements QueryToolInterface {
     }
 
     @Override
+    public long getCount(String tableName) {
+        String sql = getSQLCount(tableName);
+        return execAggregateSql(sql);
+    }
+
+    @Override
     public long getMaxIdVal(String tableName, String primaryKey) {
+        String sql = getSQLMaxID(tableName, primaryKey);
+        return execAggregateSql(sql);
+    }
+
+    private long execAggregateSql(String sql) {
         Statement stmt = null;
         ResultSet rs = null;
         long maxVal = 0;
         try {
             stmt = connection.createStatement();
             //获取sql
-            String sql = getSQLMaxID(tableName, primaryKey);
             rs = stmt.executeQuery(sql);
             rs.next();
             maxVal = rs.getLong(1);
@@ -468,6 +487,10 @@ public abstract class BaseQueryTool implements QueryToolInterface {
 
     private String getSQLMaxID(String tableName, String primaryKey) {
         return sqlBuilder.getMaxId(tableName, primaryKey);
+    }
+
+    private String getSQLCount(String tableName) {
+        return sqlBuilder.getCount(tableName);
     }
 
     public void executeCreateTableSql(String querySql) {

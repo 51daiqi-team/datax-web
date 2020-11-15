@@ -46,6 +46,11 @@ public abstract class BaseDatabaseMeta implements DatabaseInterface {
     }
 
     @Override
+    public String getCount(String tableName) {
+        return String.format("select count(*) from %s", tableName);
+    }
+
+    @Override
     public String getSQLQueryTableSchema(String... args) {
         return null;
     }

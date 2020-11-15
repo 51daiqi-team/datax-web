@@ -11,7 +11,9 @@ public enum IncrementTypeEnum {
      */
     TIME(2, "时间"),
     ID(1, "自增主键"),
-    PARTITION(3, "HIVE分区");
+    PARTITION(3, "HIVE分区"),
+    PAGE(4, "自然分页"),
+    ;
 
     IncrementTypeEnum(int code, String descp){
         this.code = code;

@@ -86,6 +86,11 @@ public class BuildCommand {
                 if (doc.length() > 0) doc.append(SPLIT_SPACE);
                 doc.append(PARAMS_CM).append(TRANSFORM_QUOTES).append(String.format(replaceParam, startId, endId));
                 doc.append(TRANSFORM_QUOTES);
+            } else if (IncrementTypeEnum.PAGE.getCode() == incrementType) {
+                if (doc.length() > 0) doc.append(SPLIT_SPACE);
+                long startId = tgParam.getStartId();
+                doc.append(PARAMS_CM).append(TRANSFORM_QUOTES).append(String.format(replaceParam, startId));
+                doc.append(TRANSFORM_QUOTES);
             }
         }
 

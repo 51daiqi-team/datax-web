@@ -76,6 +76,8 @@ public interface QueryToolInterface {
      */
     List<String> getColumnsByQuerySql(String querySql) throws SQLException;
 
+    long getCount(String tableName);
+
     /**
      * 获取当前表maxId
      * @param tableName

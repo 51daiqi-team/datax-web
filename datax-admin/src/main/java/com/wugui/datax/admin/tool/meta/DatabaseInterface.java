@@ -35,6 +35,8 @@ public interface DatabaseInterface {
      */
     String getSQLQueryTables();
 
+    String getCount(String tableName);
+
     /**
      * 获取 Table schema
      *

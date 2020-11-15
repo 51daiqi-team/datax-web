@@ -156,6 +156,10 @@ public class JobTrigger {
                 triggerParam.setReplaceParamType(jobInfo.getReplaceParamType());
             } else if (IncrementTypeEnum.PARTITION.getCode() == incrementType) {
                 triggerParam.setPartitionInfo(jobInfo.getPartitionInfo());
+            } else if (IncrementTypeEnum.PAGE.getCode() == incrementType) {
+                long count = getCount(jobInfo);
+                jobLog.setMaxId(count);
+                triggerParam.setStartId(jobInfo.getIncStartId());
             }
             triggerParam.setReplaceParam(jobInfo.getReplaceParam());
         }
@@ -225,6 +229,12 @@ public class JobTrigger {
         JobDatasource datasource = JobAdminConfig.getAdminConfig().getJobDatasourceMapper().selectById(jobInfo.getDatasourceId());
         BaseQueryTool qTool = QueryToolFactory.getByDbType(datasource);
         return qTool.getMaxIdVal(jobInfo.getReaderTable(), jobInfo.getPrimaryKey());
+    }
+
+    private static long getCount(JobInfo jobInfo) {
+        JobDatasource datasource = JobAdminConfig.getAdminConfig().getJobDatasourceMapper().selectById(jobInfo.getDatasourceId());
+        BaseQueryTool qTool = QueryToolFactory.getByDbType(datasource);
+        return qTool.getCount(jobInfo.getReaderTable());
     }
 
     /**
